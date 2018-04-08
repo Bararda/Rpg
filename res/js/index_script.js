@@ -15,12 +15,13 @@ function initialize()
     playArea.width = canvasWidth;
     playArea.height = canvasHeight;
     playAreaContext = playArea.getContext("2d");
-    player = new gameTile(tileWidth, tileHeight, "blue", 0, 0);
+    player = new gameTile(tileWidth, tileHeight, "blue", 0, 0, true);
     setInterval(refreshFrames, 20);
 }
 
-function gameTile(width, height, color, x, y)
+function gameTile(width, height, color, x, y, isPlayerTile)
 {
+    this.isPlayerTile = isPlayerTile;
     var attack;
     var health;
     var defense;
@@ -38,6 +39,11 @@ function gameTile(width, height, color, x, y)
         playAreaContext.fillStyle = color;
         this.hitScreenEdge();
         playAreaContext.fillRect(this.x, this.y, this.width, this.height);
+        
+        if (isPlayerTile == true)
+            {
+                 this.hitOther();   
+            }
     }
     
     this.newPos = function()
@@ -71,7 +77,18 @@ function gameTile(width, height, color, x, y)
     
     this.hitOther = function ()
     {
-        
+        for (var i = 0; i < npc.length; i++)
+            {
+//                if (this.x < npc[i].x + npc[i].width  && this.x + this.width  > npc[i].x &&
+//		          this.y < npc[i].y + npc[i].height && this.y + this.height > npc[i].y)
+                    if (this.x + this.width >= npc[i].x && !(this.x > npc[i].x + npc[i].width)) 
+                    {
+                        console.log("the boxes hit");
+                        this.x = 0;
+                        this.y = 0;
+                        
+                    }
+            }
     }
 }
 
@@ -130,6 +147,6 @@ function addNPC(event)
             yPos += 1;   
         }
     
-    npc.push(new gameTile(tileWidth, tileHeight, "red",xPos, yPos));
+    npc.push(new gameTile(tileWidth, tileHeight, "red",xPos, yPos, false));
     usedPositions.push([xPos, yPos]);
 }
