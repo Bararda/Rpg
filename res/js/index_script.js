@@ -8,6 +8,7 @@ var tileHeight = 25;
 var player;
 var npc = new Array();
 var usedPositions = new Array();
+var lastKeyPress;
 
 function initialize()
 {
@@ -81,11 +82,25 @@ function gameTile(width, height, color, x, y, isPlayerTile)
             {
 //                if (this.x < npc[i].x + npc[i].width  && this.x + this.width  > npc[i].x &&
 //		          this.y < npc[i].y + npc[i].height && this.y + this.height > npc[i].y)
-                    if (this.x + this.width >= npc[i].x && !(this.x > npc[i].x + npc[i].width)) 
+                    if ((this.x + this.width > npc[i].x && !(this.x >= npc[i].x + npc[i].width)) && this.y == npc[i].y) 
                     {
                         console.log("the boxes hit");
-                        this.x = 0;
-                        this.y = 0;
+                        if (lastKeyPress == "W")
+                            {
+                                this.y += 25;    
+                            }
+                        else if (lastKeyPress == "S")
+                            {
+                                this.y -= 25;
+                            }
+                         else if (lastKeyPress == "A")
+                            {
+                                this.x += 25;    
+                            }
+                         else if (lastKeyPress == "D")
+                            {
+                                this.x -=25;
+                            }
                         
                     }
             }
@@ -114,19 +129,23 @@ $("html").keydown(function(event)
     player.speedX = 0;
      if (event.which == "87") //W pressed
             {
-                player.speedY -= 25;   
+                player.speedY -= 25;
+                lastKeyPress = "W";
             }
         else if (event.which == "83") //S pressed
             {
-                player.speedY += 25;      
+                player.speedY += 25;
+                lastKeyPress = "S";
             }
         else if (event.which == "65") //A pressed
             {
-                player.speedX -= 25;        
+                player.speedX -= 25;
+                lastKeyPress = "A";
             }
         else if (event.which == "68") //D pressed
             {
-                player.speedX += 25;       
+                player.speedX += 25; 
+                lastKeyPress = "D";
             }
      player.newPos();
 });
