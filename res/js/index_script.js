@@ -6,6 +6,8 @@ var canvasHeight = 500;
 var tileWidth = 25;
 var tileHeight = 25;
 var player;
+var npc = new Array();
+var usedPositions = new Array();
 
 function initialize()
 {
@@ -19,6 +21,9 @@ function initialize()
 
 function gameTile(width, height, color, x, y)
 {
+    var attack;
+    var health;
+    var defense;
     this.width = width;
     this.height = height;
     this.x = x;
@@ -63,12 +68,22 @@ function gameTile(width, height, color, x, y)
                 this.x = 0;
             }
     }
+    
+    this.hitOther = function ()
+    {
+        
+    }
 }
 
 function refreshFrames()
 {
     clearScreen();
     player.update();
+    
+    for (var i = 0; i < npc.length; i++)
+        {
+            npc[i].update();
+        }
 }
 
 function clearScreen()
@@ -98,3 +113,23 @@ $("html").keydown(function(event)
             }
      player.newPos();
 });
+
+function addNPC(event)
+{
+    console.log("entered add npc function");
+    console.log("x: " + event.offsetX);
+    console.log("y: " + event.offsetY);
+    var xPos = event.offsetX;
+    var yPos = event.offsetY;
+    while (xPos % 25 != 0)
+        {
+            xPos += 1;   
+        }
+     while (yPos % 25 != 0)
+        {
+            yPos += 1;   
+        }
+    
+    npc.push(new gameTile(tileWidth, tileHeight, "red",xPos, yPos));
+    usedPositions.push([xPos, yPos]);
+}
