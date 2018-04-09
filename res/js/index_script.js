@@ -9,20 +9,60 @@ var player;
 var npc = new Array();
 var usedPositions = new Array();
 var lastKeyPress;
+var gameConsole;
+var generateNPCType;
 
 function initialize()
 {
+    gameConsole = $(".console_window");
     playArea = document.getElementById("play_canvas");
     playArea.width = canvasWidth;
     playArea.height = canvasHeight;
     playAreaContext = playArea.getContext("2d");
-    player = new gameTile(tileWidth, tileHeight, "blue", 0, 0, true);
+    player = new playerTile(tileWidth, tileHeight, "blue", 0, 0, true);
     setInterval(refreshFrames, 20);
 }
 
-function gameTile(width, height, color, x, y, isPlayerTile)
+function npcTile(width, height, x, y, type, dialog)
 {
-    this.isPlayerTile = isPlayerTile;
+    var attack;
+    var health;
+    var defense;
+    var canInteract = false;
+    this.type = type;
+    this.dialog = dialog;
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.speedX = 0;
+    this.speedY = 0;
+    if (this.type == "enemy")
+        {
+            color = "red";
+        }
+    else if (this.type == "major")
+        {
+            color = "green";
+            canInteract = true;
+        }
+    else if (this.type == "npc")
+        {
+            color = "grey";
+        }
+    playAreaContext.fillStyle = color;
+    playAreaContext.fillRect(this.x, this.y, this.width, this.height);
+    
+    this.update = function ()
+    {
+        playAreaContext.fillStyle = color;
+        playAreaContext.fillRect(this.x, this.y, this.width, this.height);
+    }
+    
+}
+
+function playerTile(width, height, color, x, y)
+{
     var attack;
     var health;
     var defense;
@@ -40,11 +80,7 @@ function gameTile(width, height, color, x, y, isPlayerTile)
         playAreaContext.fillStyle = color;
         this.hitScreenEdge();
         playAreaContext.fillRect(this.x, this.y, this.width, this.height);
-        
-        if (isPlayerTile == true)
-            {
-                 this.hitOther();   
-            }
+        this.hitOther();
     }
     
     this.newPos = function()
@@ -80,8 +116,6 @@ function gameTile(width, height, color, x, y, isPlayerTile)
     {
         for (var i = 0; i < npc.length; i++)
             {
-//                if (this.x < npc[i].x + npc[i].width  && this.x + this.width  > npc[i].x &&
-//		          this.y < npc[i].y + npc[i].height && this.y + this.height > npc[i].y)
                     if ((this.x + this.width > npc[i].x && !(this.x >= npc[i].x + npc[i].width)) && this.y == npc[i].y) 
                     {
                         console.log("the boxes hit");
@@ -147,6 +181,11 @@ $("html").keydown(function(event)
                 player.speedX += 25; 
                 lastKeyPress = "D";
             }
+        else if (event.which == "70")
+            {
+                lastKeyPress ="F";
+                //interact method
+            }
      player.newPos();
 });
 
@@ -157,6 +196,7 @@ function addNPC(event)
     console.log("y: " + event.offsetY);
     var xPos = event.offsetX;
     var yPos = event.offsetY;
+    
     while (xPos % 25 != 0)
         {
             xPos += 1;   
@@ -165,7 +205,14 @@ function addNPC(event)
         {
             yPos += 1;   
         }
+    generateNPCType = $(".changeNPCType").val();
     
-    npc.push(new gameTile(tileWidth, tileHeight, "red",xPos, yPos, false));
+    npc.push(new npcTile(tileWidth, tileHeight, xPos, yPos, generateNPCType, ""));
     usedPositions.push([xPos, yPos]);
+}
+
+function interact()
+{
+    //once f is pressed, check if player is touching an npc, if they are, get the npc from the array, and display the npc message or other attribute that must be assigned to game tiles
+    
 }

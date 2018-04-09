@@ -16,12 +16,19 @@
 
     <body>
         <div class="header">
-        
+            <select class="changeNPCType">
+                <option value="enemy">Enemy</option>
+                <option value="major">Major</option>
+                <option value="npc">Normal</option>
+            </select>
         </div>
         <div class="play_screen">
             <canvas onclick="addNPC(event)" id="play_canvas">
             
             </canvas>
+        </div>
+        <div class="console_window">
+            <p>Game text here</p>
         </div>
     </body>
 
